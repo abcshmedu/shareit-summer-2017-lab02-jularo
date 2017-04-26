@@ -17,25 +17,25 @@ public abstract class Medium {
      *
      * @param title The medium's title.
      */
-    public Medium(String title) {
+    Medium(String title) {
         if (title == null) {
             throw new IllegalArgumentException("title must not be null");
         }
         this.title = title;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
     @Override
     public String toString() {
-        return "Medium{title='" + title + '\'' +'}';
+        return "Medium{title='" + title + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object){
+        if (this == object) {
             return true;
         }
         if (object == null || getClass() != object.getClass()) {

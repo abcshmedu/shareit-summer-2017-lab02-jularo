@@ -1,22 +1,22 @@
 package edu.hm.jularo.shareit.models;
 
-public class Disc extends Medium{
+public class Disc extends Medium {
 
     private final String barcode;
     private final String director;
     private final int fsk;
 
-    public Disc(){
+    public Disc() {
         super("");
         barcode = "";
         director = "";
         fsk = -1;  //TODO wieso -1 ?
     }
 
-    public Disc(String barcode, String director, int fsk, String title){
+    public Disc(String barcode, String director, int fsk, String title) {
         super(title);
 
-        if (barcode == null || director == null ) {
+        if (barcode == null || director == null) {
             throw new IllegalArgumentException("director and barcode must not be null");
         }
 
@@ -29,11 +29,11 @@ public class Disc extends Medium{
         return barcode;
     }
 
-    public String getDirector() {
+    private String getDirector() {
         return director;
     }
 
-    public int getFsk() {
+    private int getFsk() {
         return fsk;
     }
 
@@ -50,16 +50,15 @@ public class Disc extends Medium{
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        if (!super.equals(object)){
+        if (!super.equals(object)) {
             return false;
         }
 
         Disc disc = (Disc) object;
 
-        return  fsk == disc.getFsk()
+        return fsk == disc.getFsk()
                 && barcode.equals(disc.getBarcode())
                 && director.equals(disc.getDirector());
-
     }
 
     @Override
@@ -69,5 +68,9 @@ public class Disc extends Medium{
         result = 31 * result + director.hashCode();
         result = 31 * result + fsk;
         return result;
+    }
+
+    public boolean isValid() {
+        return !director.isEmpty() && !getTitle().isEmpty();
     }
 }

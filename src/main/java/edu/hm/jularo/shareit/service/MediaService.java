@@ -22,5 +22,4 @@ public interface MediaService {
     MediaServiceResult updateBook(Book book);
 
     MediaServiceResult updateDisc(Disc disc);
-
 }

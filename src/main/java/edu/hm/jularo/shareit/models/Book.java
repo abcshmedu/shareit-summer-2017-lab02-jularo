@@ -20,7 +20,7 @@ public class Book extends Medium {
         this.isbn = isbn;
     }
 
-    public String getAuthor() {
+    private String getAuthor() {
         return author;
     }
 
@@ -30,14 +30,13 @@ public class Book extends Medium {
 
     @Override
     public String toString() {
-        //return "Book{ Titel: "+ getTitle() + " - Author='" + author + '\'' + ", isbn='" + isbn + '\'' + '}';
 
         StringBuilder builder = new StringBuilder();
-            builder.append("{\n");
-            builder.append(" \"title\":\""+getTitle()+"\",\n");
-            builder.append(" \"isbn\":\""+isbn+"\",\n");
-            builder.append(" \"author\":\""+author+ "\"\n");
-            builder.append("}\n");
+        builder.append("{\n");
+        builder.append(" \"title\":\"" + getTitle() + "\",\n");
+        builder.append(" \"isbn\":\"" + isbn + "\",\n");
+        builder.append(" \"author\":\"" + author + "\"\n");
+        builder.append("}\n");
 
         return builder.toString();
     }
@@ -65,5 +64,9 @@ public class Book extends Medium {
         result = 31 * result + author.hashCode();
         result = 31 * result + isbn.hashCode();
         return result;
+    }
+
+    public boolean isValid() {
+        return !author.isEmpty() && !getTitle().isEmpty();
     }
 }

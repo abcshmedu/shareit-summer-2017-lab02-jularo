@@ -14,22 +14,27 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public MediaServiceResult addBook(Book book) {
         if (bookList.contains(book)) {
-            return MediaServiceResult.BAD_REQUEST;  //TODO Result für "Item bereits in Liste"?
+            return MediaServiceResult.ALREADY_IN_LIST;
         }
 
-        bookList.add(book);
-        System.out.println(book.toString() + " wurde hinzugefügt.");
-        return MediaServiceResult.OK;
+        if (book.isValid()) {
+            bookList.add(book);
+            return MediaServiceResult.CREATED;
+        }
+        return MediaServiceResult.NOT_VALID;
     }
 
     @Override
     public MediaServiceResult addDisc(Disc disc) {
         if (discList.contains(disc)) {
-            return MediaServiceResult.BAD_REQUEST;  //TODO Result für "Item bereits in Liste"?
+            return MediaServiceResult.ALREADY_IN_LIST;
         }
 
-        discList.add(disc);
-        return MediaServiceResult.OK;
+        if (disc.isValid()) {
+            discList.add(disc);
+            return MediaServiceResult.CREATED;
+        }
+        return MediaServiceResult.NOT_VALID;
     }
 
     @Override
@@ -66,27 +71,27 @@ public class MediaServiceImpl implements MediaService {
     public MediaServiceResult updateBook(Book updatedBook) {
         if (updatedBook != null) {
             Book bookToUpdate = getBookByISBN(updatedBook.getIsbn());
-            if (bookToUpdate != null) {
+            if (bookToUpdate != null && bookToUpdate.isValid()) {
                 bookList.remove(bookToUpdate);
                 bookList.add(updatedBook);
-                return MediaServiceResult.OK;
+                return MediaServiceResult.UPDATED;
             }
         }
 
-        return MediaServiceResult.BAD_REQUEST;
+        return MediaServiceResult.NOT_ACCEPTABLE;
     }
 
     @Override
     public MediaServiceResult updateDisc(Disc updatedDisc) {
         if (updatedDisc != null) {
             Disc discToUpdate = getDiscByBarcode(updatedDisc.getBarcode());
-            if (discToUpdate != null) {
+            if (discToUpdate != null && discToUpdate.isValid()) {
                 discList.remove(discToUpdate);
                 discList.add(updatedDisc);
-                return MediaServiceResult.OK;
+                return MediaServiceResult.UPDATED;
             }
         }
 
-        return MediaServiceResult.BAD_REQUEST;
+        return MediaServiceResult.NOT_ACCEPTABLE;
     }
 }

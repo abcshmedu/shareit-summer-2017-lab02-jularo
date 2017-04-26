@@ -4,7 +4,7 @@ public class Copy {
     private Medium medium;
     private String owner;
 
-    public Copy(String owner, Medium medium){
+    public Copy(String owner, Medium medium) {
 
         if (owner == null || medium == null) {
             throw new IllegalArgumentException("owner and medium must not be null");
