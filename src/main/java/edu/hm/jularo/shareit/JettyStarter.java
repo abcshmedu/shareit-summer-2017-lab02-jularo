@@ -14,6 +14,11 @@ public class JettyStarter {
     public static final int PORT = 8082;
     public static final String WEBAPP_DIR = "./src/main/webapp/";
 
+    /**
+     * main Methode zum Starten von Jetty.
+     * @param args - nicht benötigt
+     * @throws Exception - Mögliche Exception beim Starten des Servers.
+     */
     public static void main(String... args) throws Exception {
         Server jetty = new Server(PORT);
         jetty.setHandler(new WebAppContext(WEBAPP_DIR, APP_URL));

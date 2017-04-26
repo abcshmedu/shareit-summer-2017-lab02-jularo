@@ -3,19 +3,21 @@ package edu.hm.jularo.shareit.service;
 import edu.hm.jularo.shareit.models.Book;
 import edu.hm.jularo.shareit.models.Disc;
 
+import java.util.List;
+
 public interface MediaService {
 
     MediaServiceResult addBook(Book book);
 
     MediaServiceResult addDisc(Disc disc);
 
-    Book getBook(String isbn);
+    Book getBookByISBN(String isbn);
 
-    Book[] getBooks();
+    List<Book> getBooks();
 
-    Disc getDisc(String barcode);
+    Disc getDiscByBarcode(String barcode);
 
-    Disc[] getDiscs();
+    List<Disc> getDiscs();
 
     MediaServiceResult updateBook(Book book);
 

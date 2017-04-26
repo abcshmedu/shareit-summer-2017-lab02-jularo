@@ -18,6 +18,9 @@ public abstract class Medium {
      * @param title The medium's title.
      */
     public Medium(String title) {
+        if (title == null) {
+            throw new IllegalArgumentException("title must not be null");
+        }
         this.title = title;
     }
 
@@ -31,17 +34,20 @@ public abstract class Medium {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object object) {
+        if (this == object){
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
 
-        Medium medium = (Medium) o;
-
-        return getTitle() != null ? getTitle().equals(medium.getTitle()) : medium.getTitle() == null;
+        Medium medium = (Medium) object;
+        return title.equals(medium.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return getTitle() != null ? getTitle().hashCode() : 0;
+        return title.hashCode();
     }
 }

@@ -6,13 +6,16 @@ public class Book extends Medium {
     private final String isbn;
 
     public Book() {
-        super(null);
-        author = null;
-        isbn = null;
+        super("");
+        author = "";
+        isbn = "";
     }
 
     public Book(String author, String isbn, String title) {
         super(title);
+        if (author == null || isbn == null) {
+            throw new IllegalArgumentException("isbn and author must not be null");
+        }
         this.author = author;
         this.isbn = isbn;
     }
@@ -31,31 +34,27 @@ public class Book extends Medium {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object object) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
-
-        Book book = (Book) o;
-        if (getAuthor() != null ? !getAuthor().equals(book.getAuthor()) : book.getAuthor() != null) {
+        if (!super.equals(object)) {
             return false;
         }
 
-        return getIsbn() != null ? getIsbn().equals(book.getIsbn()) : book.getIsbn() == null;
-
+        Book book = (Book) object;
+        return author.equals(book.getAuthor())
+                && isbn.equals(book.getIsbn());
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (getAuthor() != null ? getAuthor().hashCode() : 0);
-        result = 31 * result + (getIsbn() != null ? getIsbn().hashCode() : 0);
+        result = 31 * result + author.hashCode();
+        result = 31 * result + isbn.hashCode();
         return result;
     }
 }
