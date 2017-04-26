@@ -1,16 +1,32 @@
 package edu.hm.jularo.shareit.models;
 
+/**
+ * Model für Bücher.
+ *
+ * @author Juliane Seidl
+ * @author Carolin Direnberger
+ */
 public class Book extends Medium {
 
     private final String author;
     private final String isbn;
 
+    /**
+     * Kontruktor.
+     */
     public Book() {
         super("");
         author = "";
         isbn = "";
     }
 
+    /**
+     * Konstruktor.
+     *
+     * @param author Der Autor des Buches
+     * @param isbn   Die ISBN des Buches
+     * @param title  Der Titel des Buches
+     */
     public Book(String author, String isbn, String title) {
         super(title);
         if (author == null || isbn == null) {
@@ -20,17 +36,26 @@ public class Book extends Medium {
         this.isbn = isbn;
     }
 
+    /**
+     * Einfacher Getter für den Autor.
+     *
+     * @return author
+     */
     private String getAuthor() {
         return author;
     }
 
+    /**
+     * Einfacher Getter für die ISBN.
+     *
+     * @return isbn
+     */
     public String getIsbn() {
         return isbn;
     }
 
     @Override
     public String toString() {
-
         StringBuilder builder = new StringBuilder();
         builder.append("{\n");
         builder.append(" \"title\":\"" + getTitle() + "\",\n");
@@ -66,6 +91,11 @@ public class Book extends Medium {
         return result;
     }
 
+    /**
+     * Prüft, ob der Titel und der Autor des Buches gefüllt sind.
+     *
+     * @return true wenn valid
+     */
     public boolean isValid() {
         return !author.isEmpty() && !getTitle().isEmpty();
     }

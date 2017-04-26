@@ -6,19 +6,25 @@ import edu.hm.jularo.shareit.models.Disc;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasse enthält die Methoden zum Bearbeiten der Medienlisten.
+ *
+ * @author Carolin Direnberger
+ * @author Juliane Seidl
+ */
 public class MediaServiceImpl implements MediaService {
 
-    private static final List<Book> bookList = new ArrayList<>();
-    private static final List<Disc> discList = new ArrayList<>();
+    private static final List<Book> BOOK_LIST = new ArrayList<>();
+    private static final List<Disc> DISC_LIST = new ArrayList<>();
 
     @Override
     public MediaServiceResult addBook(Book book) {
-        if (bookList.contains(book)) {
+        if (BOOK_LIST.contains(book)) {
             return MediaServiceResult.ALREADY_IN_LIST;
         }
 
         if (book.isValid()) {
-            bookList.add(book);
+            BOOK_LIST.add(book);
             return MediaServiceResult.CREATED;
         }
         return MediaServiceResult.NOT_VALID;
@@ -26,12 +32,12 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult addDisc(Disc disc) {
-        if (discList.contains(disc)) {
+        if (DISC_LIST.contains(disc)) {
             return MediaServiceResult.ALREADY_IN_LIST;
         }
 
         if (disc.isValid()) {
-            discList.add(disc);
+            DISC_LIST.add(disc);
             return MediaServiceResult.CREATED;
         }
         return MediaServiceResult.NOT_VALID;
@@ -39,7 +45,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public Book getBookByISBN(String isbn) {
-        for (Book book : bookList) {
+        for (Book book : BOOK_LIST) {
             if (isbn.equals(book.getIsbn())) {
                 return book;
             }
@@ -49,12 +55,12 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public List<Book> getBooks() {
-        return bookList;
+        return BOOK_LIST;
     }
 
     @Override
     public Disc getDiscByBarcode(String barcode) {
-        for (Disc disc : discList) {
+        for (Disc disc : DISC_LIST) {
             if (barcode.equals(disc.getBarcode())) {
                 return disc;
             }
@@ -64,7 +70,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public List<Disc> getDiscs() {
-        return discList;
+        return DISC_LIST;
     }
 
     @Override
@@ -72,8 +78,8 @@ public class MediaServiceImpl implements MediaService {
         if (updatedBook != null) {
             Book bookToUpdate = getBookByISBN(updatedBook.getIsbn());
             if (bookToUpdate != null && bookToUpdate.isValid()) {
-                bookList.remove(bookToUpdate);
-                bookList.add(updatedBook);
+                BOOK_LIST.remove(bookToUpdate);
+                BOOK_LIST.add(updatedBook);
                 return MediaServiceResult.UPDATED;
             }
         }
@@ -86,8 +92,8 @@ public class MediaServiceImpl implements MediaService {
         if (updatedDisc != null) {
             Disc discToUpdate = getDiscByBarcode(updatedDisc.getBarcode());
             if (discToUpdate != null && discToUpdate.isValid()) {
-                discList.remove(discToUpdate);
-                discList.add(updatedDisc);
+                DISC_LIST.remove(discToUpdate);
+                DISC_LIST.add(updatedDisc);
                 return MediaServiceResult.UPDATED;
             }
         }

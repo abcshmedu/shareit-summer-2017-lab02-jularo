@@ -24,6 +24,11 @@ public abstract class Medium {
         this.title = title;
     }
 
+    /**
+     * Einfacher Getter für den Titel des Mediums.
+     *
+     * @return Mediumtitel
+     */
     String getTitle() {
         return title;
     }

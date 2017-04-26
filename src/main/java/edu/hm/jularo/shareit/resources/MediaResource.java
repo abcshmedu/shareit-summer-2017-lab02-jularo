@@ -11,11 +11,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+/**
+ * Handler für die Anfragen.
+ *
+ * @author Carolin Direnberger
+ * @author Juliane Seidl
+ */
 @Path("/media")
 public class MediaResource {
 
     private final MediaService mediaService = new MediaServiceImpl();
 
+    /**
+     * Fügt ein Buch zur Bücherliste hinzu.
+     *
+     * @param book Das Buch, welches hinzugefügt werden soll.
+     * @return Responsestatus
+     */
     @POST
     @Path("/books")
     @Produces(MediaType.APPLICATION_JSON)
@@ -25,6 +37,12 @@ public class MediaResource {
         return Response.status(result.getCode()).entity(result.getDetail()).build();
     }
 
+    /**
+     * Sucht ein Buch mit Hilfe der ISBN.
+     *
+     * @param isbn Die ISBN des Buches
+     * @return Responsestatus
+     */
     @GET
     @Path("/books/{isbn}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +54,11 @@ public class MediaResource {
         return Response.status(MediaServiceResult.MEDIUM_NOT_IN_LIST.getCode()).entity(MediaServiceResult.MEDIUM_NOT_IN_LIST.getDetail()).build();
     }
 
+    /**
+     * Gibt die Bücherliste aus.
+     *
+     * @return Responsestatus
+     */
     @GET
     @Path("/books")
     @Produces(MediaType.APPLICATION_JSON)
@@ -43,6 +66,12 @@ public class MediaResource {
         return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getBooks())).build();
     }
 
+    /**
+     * Aktualisiert ein Buch.
+     *
+     * @param book Das zu ändernde Buch
+     * @return Responsestatus
+     */
     @PUT
     @Path("/books/{isbn}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +81,12 @@ public class MediaResource {
         return Response.status(result.getCode()).entity(result.getDetail()).build();
     }
 
+    /**
+     * Fügt eine Disc zur Discliste hinzu.
+     *
+     * @param disc Die Disc, welche hinzugefügt werden soll.
+     * @return Responsestatus
+     */
     @POST
     @Path("/discs")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,6 +96,12 @@ public class MediaResource {
         return Response.status(result.getCode()).entity(result.getDetail()).build();
     }
 
+    /**
+     * Sucht ein Buch mit Hilfe des Barcodes.
+     *
+     * @param barcode Der Barcode des Buches
+     * @return Responsestatus
+     */
     @GET
     @Path("/discs/{barcode}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -72,6 +113,11 @@ public class MediaResource {
         return Response.status(MediaServiceResult.MEDIUM_NOT_IN_LIST.getCode()).entity(MediaServiceResult.MEDIUM_NOT_IN_LIST.getDetail()).build();
     }
 
+    /**
+     * Gibt die Discliste aus.
+     *
+     * @return Responsestatus
+     */
     @GET
     @Path("/discs")
     @Produces(MediaType.APPLICATION_JSON)
@@ -79,6 +125,12 @@ public class MediaResource {
         return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getDiscs())).build();
     }
 
+    /**
+     * Aktualisiert eine Disc.
+     *
+     * @param disc Die zu ändernde Disc
+     * @return Responsestatus
+     */
     @PUT
     @Path("/discs/{barcode}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,6 +140,13 @@ public class MediaResource {
         return Response.status(result.getCode()).entity(result.getDetail()).build();
     }
 
+    /**
+     * Hilfsmethode zur Ausgabe der Medienlisten.
+     *
+     * @param media Die Medienliste
+     * @param <T>   Disc oder Book
+     * @return Die Medienliste als String
+     */
     private static <T> String jsonBuilder(List<T> media) {
         StringBuilder builder = new StringBuilder();
         for (T medium : media) {

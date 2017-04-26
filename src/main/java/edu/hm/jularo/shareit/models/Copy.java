@@ -1,10 +1,22 @@
 package edu.hm.jularo.shareit.models;
 
-public class Copy {
+/**
+ * Klasse für Ausleiher und Medium.
+ *
+ * @author Juliane Seidl
+ * @author Carolin Direnberger
+ */
+class Copy {
     private Medium medium;
     private String owner;
 
-    public Copy(String owner, Medium medium) {
+    /**
+     * Konstruktor.
+     *
+     * @param owner  Der Besitzer des Mediums
+     * @param medium Das Medium.
+     */
+    Copy(String owner, Medium medium) {
 
         if (owner == null || medium == null) {
             throw new IllegalArgumentException("owner and medium must not be null");
@@ -14,10 +26,20 @@ public class Copy {
         this.medium = medium;
     }
 
+    /**
+     * Einfacher Getter für das Medium.
+     *
+     * @return medium
+     */
     public Medium getMedium() {
         return medium;
     }
 
+    /**
+     * Einfacher Getter für den Besitzer.
+     *
+     * @return owner
+     */
     public String getOwner() {
         return owner;
     }
