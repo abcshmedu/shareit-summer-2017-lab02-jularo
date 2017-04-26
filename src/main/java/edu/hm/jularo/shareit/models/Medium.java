@@ -4,7 +4,7 @@ package edu.hm.jularo.shareit.models;
  * This is the class that represents a medium.
  *
  * @author Juliane Seidl
- * @author Carolin Dierenberger
+ * @author Carolin Direnberger
  */
 public abstract class Medium {
     /**

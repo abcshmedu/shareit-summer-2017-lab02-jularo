@@ -30,7 +30,16 @@ public class Book extends Medium {
 
     @Override
     public String toString() {
-        return "Book{" + super.toString() + ", author='" + author + '\'' + ", isbn='" + isbn + '\'' + '}';
+        //return "Book{ Titel: "+ getTitle() + " - Author='" + author + '\'' + ", isbn='" + isbn + '\'' + '}';
+
+        StringBuilder builder = new StringBuilder();
+            builder.append("{\n");
+            builder.append(" \"title\":\""+getTitle()+"\",\n");
+            builder.append(" \"isbn\":\""+isbn+"\",\n");
+            builder.append(" \"author\":\""+author+ "\"\n");
+            builder.append("}\n");
+
+        return builder.toString();
     }
 
     @Override

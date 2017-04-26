@@ -20,7 +20,7 @@
 
 	<servlet-mapping>
 		<servlet-name>Jersey Web Application</servlet-name>
-		<url-pattern>/convert/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
      <servlet>
@@ -28,7 +28,7 @@
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>  
 		  <param-name>jersey.config.server.provider.packages</param-name>  
-	     <param-value>edu.hm.shareit.resources</param-value>
+	     <param-value>edu.hm.jularo.shareit.resources.MediaResource</param-value>
 	     </init-param>
 		<init-param>
 		  <param-name>jersey.config.server.provider.classnames</param-name>

@@ -18,6 +18,7 @@ public class MediaServiceImpl implements MediaService {
         }
 
         bookList.add(book);
+        System.out.println(book.toString() + " wurde hinzugefügt.");
         return MediaServiceResult.OK;
     }
 
