@@ -13,7 +13,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult addBook(Book book) {
-        if(bookList.contains(book)){
+        if (bookList.contains(book)) {
             return MediaServiceResult.BAD_REQUEST;  //TODO Result für "Item bereits in Liste"?
         }
 
@@ -23,7 +23,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult addDisc(Disc disc) {
-        if(discList.contains(disc)){
+        if (discList.contains(disc)) {
             return MediaServiceResult.BAD_REQUEST;  //TODO Result für "Item bereits in Liste"?
         }
 
@@ -33,7 +33,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public Book getBookByISBN(String isbn) {
-        for ( Book book : bookList) {
+        for (Book book : bookList) {
             if (isbn.equals(book.getIsbn())) {
                 return book;
             }
@@ -48,7 +48,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public Disc getDiscByBarcode(String barcode) {
-        for ( Disc disc : discList) {
+        for (Disc disc : discList) {
             if (barcode.equals(disc.getBarcode())) {
                 return disc;
             }
@@ -63,33 +63,29 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult updateBook(Book updatedBook) {
-        if(updatedBook==null){
-            return MediaServiceResult.BAD_REQUEST;
+        if (updatedBook != null) {
+            Book bookToUpdate = getBookByISBN(updatedBook.getIsbn());
+            if (bookToUpdate != null) {
+                bookList.remove(bookToUpdate);
+                bookList.add(updatedBook);
+                return MediaServiceResult.OK;
+            }
         }
 
-        Book bookToUpdate = getBookByISBN(updatedBook.getIsbn());
-
-        if(bookList.contains(bookToUpdate)){
-            bookList.remove(bookToUpdate);
-            bookList.add(updatedBook);
-        }
-
-        return MediaServiceResult.OK;
+        return MediaServiceResult.BAD_REQUEST;
     }
 
     @Override
     public MediaServiceResult updateDisc(Disc updatedDisc) {
-        if(updatedDisc==null){
-            return MediaServiceResult.BAD_REQUEST;
+        if (updatedDisc != null) {
+            Disc discToUpdate = getDiscByBarcode(updatedDisc.getBarcode());
+            if (discToUpdate != null) {
+                discList.remove(discToUpdate);
+                discList.add(updatedDisc);
+                return MediaServiceResult.OK;
+            }
         }
 
-        Disc discToUpdate = getDiscByBarcode(updatedDisc.getBarcode());
-
-        if(discList.contains(discToUpdate)){
-            discList.remove(discToUpdate);
-            discList.add(updatedDisc);
-        }
-
-        return MediaServiceResult.OK;
+        return MediaServiceResult.BAD_REQUEST;
     }
 }
