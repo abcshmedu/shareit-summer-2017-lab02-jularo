@@ -1,48 +1,52 @@
 package edu.hm.jularo.shareit.models;
 
-public class Book extends Medium{
+public class Book extends Medium {
 
     private final String author;
     private final String isbn;
 
-    public Book(){
+    public Book() {
         super(null);
         author = null;
         isbn = null;
     }
 
-    public Book(String author, String isbn, String title){
+    public Book(String author, String isbn, String title) {
         super(title);
         this.author = author;
         this.isbn = isbn;
     }
 
-    public String getAuthor(){
+    public String getAuthor() {
         return author;
     }
 
-    public String getIsbn(){
+    public String getIsbn() {
         return isbn;
     }
 
     @Override
     public String toString() {
-        return "Book{" +
-                super.toString() +
-                ", author='" + author + '\'' +
-                ", isbn='" + isbn + '\'' +
-                '}';
+        return "Book{" + super.toString() + ", author='" + author + '\'' + ", isbn='" + isbn + '\'' + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Book book = (Book) o;
+        if (getAuthor() != null ? !getAuthor().equals(book.getAuthor()) : book.getAuthor() != null) {
+            return false;
+        }
 
-        if (getAuthor() != null ? !getAuthor().equals(book.getAuthor()) : book.getAuthor() != null) return false;
         return getIsbn() != null ? getIsbn().equals(book.getIsbn()) : book.getIsbn() == null;
 
     }

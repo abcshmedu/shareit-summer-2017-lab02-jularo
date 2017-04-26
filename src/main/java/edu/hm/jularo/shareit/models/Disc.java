@@ -34,12 +34,7 @@ public class Disc extends Medium{
 
     @Override
     public String toString() {
-        return "Disc{" +
-                super.toString() +
-                ", barcode='" + barcode + '\'' +
-                ", director='" + director + '\'' +
-                ", fsk=" + fsk +
-                '}';
+        return "Disc{" + super.toString() + ", barcode='" + barcode + '\'' + ", director='" + director + '\'' + ", fsk=" + fsk + '}';
     }
 
     @Override
@@ -50,10 +45,15 @@ public class Disc extends Medium{
 
         Disc disc = (Disc) o;
 
-        if (getFsk() != disc.getFsk()) return false;
-        if (getBarcode() != null ? !getBarcode().equals(disc.getBarcode()) : disc.getBarcode() != null) return false;
-        return getDirector() != null ? getDirector().equals(disc.getDirector()) : disc.getDirector() == null;
+        if (getFsk() != disc.getFsk()) {
+            return false;
+        }
 
+        if (getBarcode() != null ? !getBarcode().equals(disc.getBarcode()) : disc.getBarcode() != null){
+            return false;
+        }
+
+        return getDirector() != null ? getDirector().equals(disc.getDirector()) : disc.getDirector() == null;
     }
 
     @Override

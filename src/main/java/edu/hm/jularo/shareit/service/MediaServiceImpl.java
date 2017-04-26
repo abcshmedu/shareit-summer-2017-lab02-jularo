@@ -4,6 +4,7 @@ import edu.hm.jularo.shareit.models.Book;
 import edu.hm.jularo.shareit.models.Disc;
 
 public class MediaServiceImpl implements MediaService {
+
     @Override
     public MediaServiceResult addBook(Book book) {
         return null;
