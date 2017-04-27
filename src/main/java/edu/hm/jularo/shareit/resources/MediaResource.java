@@ -23,6 +23,21 @@ public class MediaResource {
     private final MediaService mediaService = new MediaServiceImpl();
 
     /**
+     * Hilfsmethode zur Ausgabe der Medienlisten.
+     *
+     * @param media Die Medienliste
+     * @param <T>   Disc oder Book
+     * @return Die Medienliste als String
+     */
+    private static <T> String jsonBuilder(List<T> media) {
+        StringBuilder builder = new StringBuilder();
+        for (T medium : media) {
+            builder.append(medium.toString());
+        }
+        return builder.toString();
+    }
+
+    /**
      * Fügt ein Buch zur Bücherliste hinzu.
      *
      * @param book Das Buch, welches hinzugefügt werden soll.
@@ -63,7 +78,10 @@ public class MediaResource {
     @Path("/books")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooks() {
-        return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getBooks())).build();
+        if (!mediaService.getBooks().isEmpty()) {
+            return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getBooks())).build();
+        }
+        return Response.status(MediaServiceResult.EMPTY_LIST.getCode()).entity(MediaServiceResult.EMPTY_LIST.getDetail()).build();
     }
 
     /**
@@ -122,7 +140,10 @@ public class MediaResource {
     @Path("/discs")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDiscs() {
-        return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getDiscs())).build();
+        if (!mediaService.getDiscs().isEmpty()) {
+            return Response.status(MediaServiceResult.FOUND_LIST.getCode()).entity(jsonBuilder(mediaService.getDiscs())).build();
+        }
+        return Response.status(MediaServiceResult.EMPTY_LIST.getCode()).entity(MediaServiceResult.EMPTY_LIST.getDetail()).build();
     }
 
     /**
@@ -138,20 +159,5 @@ public class MediaResource {
     public Response updateDisc(Disc disc) {
         MediaServiceResult result = mediaService.updateDisc(disc);
         return Response.status(result.getCode()).entity(result.getDetail()).build();
-    }
-
-    /**
-     * Hilfsmethode zur Ausgabe der Medienlisten.
-     *
-     * @param media Die Medienliste
-     * @param <T>   Disc oder Book
-     * @return Die Medienliste als String
-     */
-    private static <T> String jsonBuilder(List<T> media) {
-        StringBuilder builder = new StringBuilder();
-        for (T medium : media) {
-            builder.append(medium.toString());
-        }
-        return builder.toString();
     }
 }

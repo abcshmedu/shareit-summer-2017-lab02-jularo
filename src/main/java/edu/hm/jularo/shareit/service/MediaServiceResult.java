@@ -14,6 +14,7 @@ public enum MediaServiceResult {
     UPDATED(Response.Status.OK.getStatusCode(), "Änderungen wurden gespeichert."),
     FOUND_LIST(Response.Status.OK.getStatusCode(), "Medien wurden geladen."),
     CREATED(Response.Status.CREATED.getStatusCode(), "Medium wurde hinzugefügt - Läuft bei uns!"),
+    EMPTY_LIST(Response.Status.OK.getStatusCode(), "Medienliste ist leer."),
 
     ALREADY_IN_LIST(Response.Status.CONFLICT.getStatusCode(), "Medium ist bereits vorhanden."),
     MEDIUM_NOT_IN_LIST(Response.Status.NOT_FOUND.getStatusCode(), "Medium wurde nicht gefunden."),

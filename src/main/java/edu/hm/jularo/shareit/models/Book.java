@@ -41,7 +41,7 @@ public class Book extends Medium {
      *
      * @return author
      */
-    private String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 

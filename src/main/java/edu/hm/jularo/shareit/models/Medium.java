@@ -29,7 +29,7 @@ public abstract class Medium {
      *
      * @return Mediumtitel
      */
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 

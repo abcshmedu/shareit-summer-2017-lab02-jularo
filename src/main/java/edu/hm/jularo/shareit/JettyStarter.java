@@ -8,6 +8,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
  *
  * @author ab@cs.hm.edu
  */
+//CHECKSTYLE:OFF
 public class JettyStarter {
 
     private static final String APP_URL = "/";

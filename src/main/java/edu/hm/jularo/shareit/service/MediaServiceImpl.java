@@ -19,13 +19,17 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult addBook(Book book) {
-        if (BOOK_LIST.contains(book)) {
-            return MediaServiceResult.ALREADY_IN_LIST;
-        }
 
-        if (book.isValid()) {
-            BOOK_LIST.add(book);
-            return MediaServiceResult.CREATED;
+        if (book != null) {
+            System.out.println(book.toString());
+            if (BOOK_LIST.contains(book)) {
+                return MediaServiceResult.ALREADY_IN_LIST;
+            }
+
+            if (book.isValid()) {
+                BOOK_LIST.add(book);
+                return MediaServiceResult.CREATED;
+            }
         }
         return MediaServiceResult.NOT_VALID;
     }

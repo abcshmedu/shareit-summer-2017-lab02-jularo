@@ -56,7 +56,7 @@ public class Disc extends Medium {
      *
      * @return director
      */
-    private String getDirector() {
+    public String getDirector() {
         return director;
     }
 
@@ -65,7 +65,7 @@ public class Disc extends Medium {
      *
      * @return fsk
      */
-    private int getFsk() {
+    public int getFsk() {
         return fsk;
     }
 
