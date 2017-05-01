@@ -10,14 +10,10 @@ import javax.ws.rs.core.Response;
  */
 public enum MediaServiceResult {
 
-    FOUND(Response.Status.OK.getStatusCode(), "Medium wurde geladen."),
     UPDATED(Response.Status.OK.getStatusCode(), "Änderungen wurden gespeichert."),
-    FOUND_LIST(Response.Status.OK.getStatusCode(), "Medien wurden geladen."),
     CREATED(Response.Status.CREATED.getStatusCode(), "Medium wurde hinzugefügt - Läuft bei uns!"),
-    EMPTY_LIST(Response.Status.OK.getStatusCode(), "Medienliste ist leer."),
 
     ALREADY_IN_LIST(Response.Status.CONFLICT.getStatusCode(), "MedienID ist bereits vorhanden."),
-    MEDIUM_NOT_IN_LIST(Response.Status.NOT_FOUND.getStatusCode(), "Medium wurde nicht gefunden."),
     NOT_VALID(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Medium wurde nicht akzeptiert.");
 
     private final int code;

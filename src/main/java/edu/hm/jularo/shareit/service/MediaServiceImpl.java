@@ -86,7 +86,7 @@ public class MediaServiceImpl implements MediaService {
     public MediaServiceResult updateBook(Book updatedBook) {
         if (updatedBook != null) {
             Book bookToUpdate = getBookByISBN(updatedBook.getIsbn());
-            if (bookToUpdate != null && bookToUpdate.isValid()) {
+            if (bookToUpdate != null && updatedBook.isValid()) {
                 BOOK_LIST.remove(bookToUpdate);
                 BOOK_LIST.add(updatedBook);
                 return MediaServiceResult.UPDATED;
@@ -100,7 +100,7 @@ public class MediaServiceImpl implements MediaService {
     public MediaServiceResult updateDisc(Disc updatedDisc) {
         if (updatedDisc != null) {
             Disc discToUpdate = getDiscByBarcode(updatedDisc.getBarcode());
-            if (discToUpdate != null && discToUpdate.isValid()) {
+            if (discToUpdate != null && updatedDisc.isValid()) {
                 DISC_LIST.remove(discToUpdate);
                 DISC_LIST.add(updatedDisc);
                 return MediaServiceResult.UPDATED;
