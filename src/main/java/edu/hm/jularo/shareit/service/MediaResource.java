@@ -44,8 +44,8 @@ public class MediaResource {
      */
     @POST
     @Path("/books")
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createBook(Book book) {
         MediaServiceResult result = mediaService.addBook(book);
         return Response.status(result.getCode()).entity(result.getDetail()).build();
@@ -61,8 +61,8 @@ public class MediaResource {
     @Path("/books/{isbn}")
     @Produces(MediaType.APPLICATION_JSON)
     public Book getBookByISBN(@PathParam("isbn") String isbn) {
-        Book book = mediaService.getBookByISBN(isbn);
-        return book;
+        //Book book = mediaService.getBookByISBN(isbn);
+        return mediaService.getBookByISBN(isbn);
 //        if (book != null) {
 //            return Response.status(MediaServiceResult.FOUND.getCode()).entity(book.toString()).build();
 //        }
@@ -94,8 +94,8 @@ public class MediaResource {
      */
     @PUT
     @Path("/books/{isbn}")
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateBook(Book book) {
         MediaServiceResult result = mediaService.updateBook(book);
         return Response.status(result.getCode()).entity(result.getDetail()).build();
@@ -109,8 +109,8 @@ public class MediaResource {
      */
     @POST
     @Path("/discs")
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createDisc(Disc disc) {
         MediaServiceResult result = mediaService.addDisc(disc);
         return Response.status(result.getCode()).entity(result.getDetail()).build();
@@ -126,8 +126,8 @@ public class MediaResource {
     @Path("/discs/{barcode}")
     @Produces(MediaType.APPLICATION_JSON)
     public Disc getDiscByBarcode(@PathParam("barcode") String barcode) {
-        Disc disc = mediaService.getDiscByBarcode(barcode);
-        return disc;
+//        Disc disc = mediaService.getDiscByBarcode(barcode);
+        return mediaService.getDiscByBarcode(barcode);
 //        if (disc != null) {
 //            return Response.status(MediaServiceResult.FOUND.getCode()).entity(disc.toString()).build();
 //        }
@@ -159,8 +159,8 @@ public class MediaResource {
      */
     @PUT
     @Path("/discs/{barcode}")
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateDisc(Disc disc) {
         MediaServiceResult result = mediaService.updateDisc(disc);
         return Response.status(result.getCode()).entity(result.getDetail()).build();
