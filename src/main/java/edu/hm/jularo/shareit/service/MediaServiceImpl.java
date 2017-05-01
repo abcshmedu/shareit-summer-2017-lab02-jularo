@@ -18,11 +18,16 @@ public class MediaServiceImpl implements MediaService {
     private static final List<Disc> DISC_LIST = new ArrayList<>();
 
     @Override
+    public void clearLists() {
+        BOOK_LIST.clear();
+        DISC_LIST.clear();
+    }
+
+    @Override
     public MediaServiceResult addBook(Book book) {
 
         if (book != null) {
-            System.out.println(book.toString());
-            if (BOOK_LIST.contains(book)) {
+            if (getBookByISBN(book.getIsbn()) != null) {
                 return MediaServiceResult.ALREADY_IN_LIST;
             }
 
@@ -36,7 +41,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public MediaServiceResult addDisc(Disc disc) {
-        if (DISC_LIST.contains(disc)) {
+        if (getDiscByBarcode(disc.getBarcode()) != null) {
             return MediaServiceResult.ALREADY_IN_LIST;
         }
 
@@ -88,7 +93,7 @@ public class MediaServiceImpl implements MediaService {
             }
         }
 
-        return MediaServiceResult.NOT_ACCEPTABLE;
+        return MediaServiceResult.NOT_VALID;
     }
 
     @Override
@@ -102,6 +107,6 @@ public class MediaServiceImpl implements MediaService {
             }
         }
 
-        return MediaServiceResult.NOT_ACCEPTABLE;
+        return MediaServiceResult.NOT_VALID;
     }
 }

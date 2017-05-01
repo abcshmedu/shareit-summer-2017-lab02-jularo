@@ -1,5 +1,8 @@
 package edu.hm.jularo.shareit.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Model für Discs.
  *
@@ -71,15 +74,12 @@ public class Disc extends Medium {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
-        builder.append(" \"title\":\"" + getTitle() + "\",\n");
-        builder.append(" \"barcode\":\"" + barcode + "\",\n");
-        builder.append(" \"director\":\"" + director + "\",\n");
-        builder.append(" \"fsk\":\"" + fsk + "\"\n");
-        builder.append("}\n");
-
-        return builder.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "Fehler beim Laden der Disk";
+        }
     }
 
     @Override
@@ -116,6 +116,6 @@ public class Disc extends Medium {
      * @return true wenn valid
      */
     public boolean isValid() {
-        return !director.isEmpty() && !getTitle().isEmpty();
+        return !barcode.isEmpty() && !director.isEmpty() && !getTitle().isEmpty();
     }
 }

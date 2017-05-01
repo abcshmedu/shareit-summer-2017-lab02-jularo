@@ -1,5 +1,8 @@
 package edu.hm.jularo.shareit.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Model für Bücher.
  *
@@ -56,14 +59,12 @@ public class Book extends Medium {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{\n");
-        builder.append(" \"title\":\"" + getTitle() + "\",\n");
-        builder.append(" \"isbn\":\"" + isbn + "\",\n");
-        builder.append(" \"author\":\"" + author + "\"\n");
-        builder.append("}\n");
-
-        return builder.toString();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "Fehler beim Laden des Buchs";
+        }
     }
 
     @Override
@@ -97,6 +98,6 @@ public class Book extends Medium {
      * @return true wenn valid
      */
     public boolean isValid() {
-        return !author.isEmpty() && !getTitle().isEmpty();
+        return !isbn.isEmpty() && !author.isEmpty() && !getTitle().isEmpty();
     }
 }

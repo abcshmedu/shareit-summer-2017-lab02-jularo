@@ -16,9 +16,8 @@ public enum MediaServiceResult {
     CREATED(Response.Status.CREATED.getStatusCode(), "Medium wurde hinzugefügt - Läuft bei uns!"),
     EMPTY_LIST(Response.Status.OK.getStatusCode(), "Medienliste ist leer."),
 
-    ALREADY_IN_LIST(Response.Status.CONFLICT.getStatusCode(), "Medium ist bereits vorhanden."),
+    ALREADY_IN_LIST(Response.Status.CONFLICT.getStatusCode(), "MedienID ist bereits vorhanden."),
     MEDIUM_NOT_IN_LIST(Response.Status.NOT_FOUND.getStatusCode(), "Medium wurde nicht gefunden."),
-    NOT_ACCEPTABLE(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Änderungen wurden nicht akzeptiert."),
     NOT_VALID(Response.Status.NOT_ACCEPTABLE.getStatusCode(), "Medium wurde nicht akzeptiert.");
 
     private final int code;

@@ -74,4 +74,9 @@ public interface MediaService {
      * @return Responsestatus
      */
     MediaServiceResult updateDisc(Disc disc);
+
+    /**
+     * Leert die Medienlisten.
+     */
+    void clearLists();
 }
