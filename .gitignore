@@ -2,7 +2,6 @@
 .classpath
 .settings/
 .idea/
-/SWAConfig.xml
 /ShareIt.iml
 /target/
 

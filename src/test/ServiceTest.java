@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ServiceTest {
 
-    private final static MediaResource mediaResource = new MediaResource();
+    private static final MediaResource MEDIA_RESOURCE = new MediaResource();
 
     // -----------------------------------------
     // ----------------- Books -----------------
@@ -31,7 +31,7 @@ public class ServiceTest {
      */
     @Before
     public void clearLists() {
-        mediaResource.clearLists();
+        MEDIA_RESOURCE.clearLists();
     }
 
     /**
@@ -40,7 +40,7 @@ public class ServiceTest {
     @Test
     public void addingValidBook() {
         Book newBook = new Book("Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
-        Response result = mediaResource.createBook(newBook);
+        Response result = MEDIA_RESOURCE.createBook(newBook);
         assertEquals(MediaServiceResult.CREATED.getCode(), result.getStatus());
     }
 
@@ -52,10 +52,10 @@ public class ServiceTest {
         Book firstNewBook = new Book("Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
         Book secondNewBook = new Book("Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
 
-        Response result = mediaResource.createBook(firstNewBook);
+        Response result = MEDIA_RESOURCE.createBook(firstNewBook);
         assertEquals(MediaServiceResult.CREATED.getCode(), result.getStatus());
 
-        result = mediaResource.createBook(secondNewBook);
+        result = MEDIA_RESOURCE.createBook(secondNewBook);
         assertEquals(MediaServiceResult.ALREADY_IN_LIST.getCode(), result.getStatus());
     }
 
@@ -65,15 +65,15 @@ public class ServiceTest {
     @Test
     public void noEmptyFieldsInBookAccepted() {
         Book firstBook = new Book("Tanenbaum", "", "Moderne Betriebssysteme");
-        Response result = mediaResource.createBook(firstBook);
+        Response result = MEDIA_RESOURCE.createBook(firstBook);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Book secondBook = new Book("", "978-3-8273-7", "Moderne Betriebssysteme");
-        result = mediaResource.createBook(secondBook);
+        result = MEDIA_RESOURCE.createBook(secondBook);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Book thirdBook = new Book("Tanenbaum", "978-3-8273-7", "");
-        result = mediaResource.createBook(thirdBook);
+        result = MEDIA_RESOURCE.createBook(thirdBook);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 
@@ -83,8 +83,8 @@ public class ServiceTest {
     @Test
     public void getBookByExistingISBN() {
         Book newBook = new Book("Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
-        mediaResource.createBook(newBook);
-        Book book = mediaResource.getBookByISBN("978-3-8273-7");
+        MEDIA_RESOURCE.createBook(newBook);
+        Book book = MEDIA_RESOURCE.getBookByISBN("978-3-8273-7");
         assertEquals(book, newBook);
     }
 
@@ -93,7 +93,7 @@ public class ServiceTest {
      */
     @Test
     public void getBookByUnexistingISBN() {
-        Book book = mediaResource.getBookByISBN("978-3-8273-7");
+        Book book = MEDIA_RESOURCE.getBookByISBN("978-3-8273-7");
         assertEquals(book, null);
     }
 
@@ -103,15 +103,15 @@ public class ServiceTest {
     @Test
     public void getBooks() {
         Book bookOne = new Book("Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
-        mediaResource.createBook(bookOne);
+        MEDIA_RESOURCE.createBook(bookOne);
 
         Book bookTwo = new Book("Tanenbaum", "3-8273-7151-1", "Computerarchitektur");
-        mediaResource.createBook(bookTwo);
+        MEDIA_RESOURCE.createBook(bookTwo);
 
         Book bookThree = new Book("Tanenbaum", "978-3-8273-7097-6", "Compiler");
-        mediaResource.createBook(bookThree);
+        MEDIA_RESOURCE.createBook(bookThree);
 
-        List<Book> books = mediaResource.getBooks();
+        List<Book> books = MEDIA_RESOURCE.getBooks();
         boolean bookOneFound = false;
         boolean bookTwoFound = false;
         boolean bookThreeFound = false;
@@ -134,12 +134,12 @@ public class ServiceTest {
     @Test
     public void updateBook() {
         Book oldBook = new Book("Tanenbaum", "978-3-8273-7", "Betriebssysteme");
-        mediaResource.createBook(oldBook);
-        assertEquals(oldBook, mediaResource.getBookByISBN("978-3-8273-7"));
+        MEDIA_RESOURCE.createBook(oldBook);
+        assertEquals(oldBook, MEDIA_RESOURCE.getBookByISBN("978-3-8273-7"));
 
         Book newBook = new Book("A. Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
-        mediaResource.updateBook(newBook);
-        assertEquals(newBook, mediaResource.getBookByISBN("978-3-8273-7"));
+        MEDIA_RESOURCE.updateBook(newBook);
+        assertEquals(newBook, MEDIA_RESOURCE.getBookByISBN("978-3-8273-7"));
     }
 
     /**
@@ -148,7 +148,7 @@ public class ServiceTest {
     @Test
     public void updateBookISBNNotInList() {
         Book newBook = new Book("A. Tanenbaum", "978-3-8273-7", "Moderne Betriebssysteme");
-        Response result = mediaResource.updateBook(newBook);
+        Response result = MEDIA_RESOURCE.updateBook(newBook);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 
@@ -158,15 +158,15 @@ public class ServiceTest {
     @Test
     public void updateBookWithInvalidAttribute() {
         Book oldBook = new Book("Tanenbaum", "978-3-8273-7", "Betriebssysteme");
-        mediaResource.createBook(oldBook);
-        assertEquals(oldBook, mediaResource.getBookByISBN("978-3-8273-7"));
+        MEDIA_RESOURCE.createBook(oldBook);
+        assertEquals(oldBook, MEDIA_RESOURCE.getBookByISBN("978-3-8273-7"));
 
         Book newBook = new Book("", "978-3-8273-7", "Moderne Betriebssysteme");
-        Response result = mediaResource.updateBook(newBook);
+        Response result = MEDIA_RESOURCE.updateBook(newBook);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Book newBook2 = new Book("Andrew", "978-3-8273-7", "");
-        result = mediaResource.updateBook(newBook2);
+        result = MEDIA_RESOURCE.updateBook(newBook2);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 
@@ -179,23 +179,23 @@ public class ServiceTest {
      */
     @Test
     public void addingValidDisc() {
-        Disc newDisk = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
-        Response result = mediaResource.createDisc(newDisk);
+        Disc newDisc = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
+        Response result = MEDIA_RESOURCE.createDisc(newDisc);
         assertEquals(MediaServiceResult.CREATED.getCode(), result.getStatus());
     }
 
     /**
-     * Test zum Hinzufügen einer Disk mit bereits vorhandenem Barcode.
+     * Test zum Hinzufügen einer Disc mit bereits vorhandenem Barcode.
      */
     @Test
     public void addingDiscWithAlreadyExistingBarcode() {
         Disc firstDisc = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
         Disc secondDisc = new Disc("5050582810837", "R. Michell", 0, "Notting Hill");
 
-        Response result = mediaResource.createDisc(firstDisc);
+        Response result = MEDIA_RESOURCE.createDisc(firstDisc);
         assertEquals(MediaServiceResult.CREATED.getCode(), result.getStatus());
 
-        result = mediaResource.createDisc(secondDisc);
+        result = MEDIA_RESOURCE.createDisc(secondDisc);
         assertEquals(MediaServiceResult.ALREADY_IN_LIST.getCode(), result.getStatus());
     }
 
@@ -205,15 +205,15 @@ public class ServiceTest {
     @Test
     public void noEmptyFieldsInDiscAccepted() {
         Disc firstDisc = new Disc("", "Roger Michell", 0, "Notting Hill");
-        Response result = mediaResource.createDisc(firstDisc);
+        Response result = MEDIA_RESOURCE.createDisc(firstDisc);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Disc secondDisc = new Disc("5050582810837", "", 0, "Notting Hill");
-        result = mediaResource.createDisc(secondDisc);
+        result = MEDIA_RESOURCE.createDisc(secondDisc);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Disc thirdDisc = new Disc("5050582810837", "Roger Michell", 0, "");
-        result = mediaResource.createDisc(thirdDisc);
+        result = MEDIA_RESOURCE.createDisc(thirdDisc);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 
@@ -223,8 +223,8 @@ public class ServiceTest {
     @Test
     public void getDiscByExistingBarcode() {
         Disc newDisc = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
-        mediaResource.createDisc(newDisc);
-        Disc disc = mediaResource.getDiscByBarcode("5050582810837");
+        MEDIA_RESOURCE.createDisc(newDisc);
+        Disc disc = MEDIA_RESOURCE.getDiscByBarcode("5050582810837");
         assertEquals(disc, newDisc);
     }
 
@@ -233,7 +233,7 @@ public class ServiceTest {
      */
     @Test
     public void getDiscByUnexistingBarcode() {
-        Disc disc = mediaResource.getDiscByBarcode("5050582810837");
+        Disc disc = MEDIA_RESOURCE.getDiscByBarcode("5050582810837");
         assertEquals(disc, null);
     }
 
@@ -242,16 +242,20 @@ public class ServiceTest {
      */
     @Test
     public void getDiscs() {
+        final int sixteen = 16;
+        final int twelve = 12;
+
         Disc discOne = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
-        mediaResource.createDisc(discOne);
+        MEDIA_RESOURCE.createDisc(discOne);
 
-        Disc discTwo = new Disc("4011976318088", "Paul McGuigan", 16, "Lucky Number Slevin");
-        mediaResource.createDisc(discTwo);
 
-        Disc discThree = new Disc("4010232067777", "Ridley Scott", 12, "The Martian");
-        mediaResource.createDisc(discThree);
+        Disc discTwo = new Disc("4011976318088", "Paul McGuigan", sixteen, "Lucky Number Slevin");
+        MEDIA_RESOURCE.createDisc(discTwo);
 
-        List<Disc> discs = mediaResource.getDiscs();
+        Disc discThree = new Disc("4010232067777", "Ridley Scott", twelve, "The Martian");
+        MEDIA_RESOURCE.createDisc(discThree);
+
+        List<Disc> discs = MEDIA_RESOURCE.getDiscs();
         boolean discOneFound = false;
         boolean discTwoFound = false;
         boolean discThreeFound = false;
@@ -269,44 +273,44 @@ public class ServiceTest {
     }
 
     /**
-     * Test, ob Updaten einer Disk funktioniert.
+     * Test, ob Updaten einer Disc funktioniert.
      */
     @Test
     public void updateDisc() {
         Disc oldDisc = new Disc("5050582810837", "R. Michell", 0, "Hill");
-        mediaResource.createDisc(oldDisc);
-        assertEquals(oldDisc, mediaResource.getDiscByBarcode("5050582810837"));
+        MEDIA_RESOURCE.createDisc(oldDisc);
+        assertEquals(oldDisc, MEDIA_RESOURCE.getDiscByBarcode("5050582810837"));
 
         Disc newDisc = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
-        mediaResource.updateDisc(newDisc);
-        assertEquals(newDisc, mediaResource.getDiscByBarcode("5050582810837"));
+        MEDIA_RESOURCE.updateDisc(newDisc);
+        assertEquals(newDisc, MEDIA_RESOURCE.getDiscByBarcode("5050582810837"));
     }
 
     /**
-     * Test, ob Updaten einer Disk mit nicht vorhander ISBN zu NOT_VALID führt.
+     * Test, ob Updaten einer Disc mit nicht vorhander ISBN zu NOT_VALID führt.
      */
     @Test
     public void updateDiscISBNNotInList() {
         Disc newDisc = new Disc("5050582810837", "Roger Michell", 0, "Notting Hill");
-        Response result = mediaResource.updateDisc(newDisc);
+        Response result = MEDIA_RESOURCE.updateDisc(newDisc);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 
     /**
-     * Test, ob Updaten einer Disk mit fehlenden Attributen zu NOT_VALID führt.
+     * Test, ob Updaten einer Disc mit fehlenden Attributen zu NOT_VALID führt.
      */
     @Test
     public void updateDiscWithInvalidAttribute() {
         Disc oldDisc = new Disc("5050582810837", "R. Michell", 0, "Notting Hill");
-        mediaResource.createDisc(oldDisc);
-        assertEquals(oldDisc, mediaResource.getDiscByBarcode("5050582810837"));
+        MEDIA_RESOURCE.createDisc(oldDisc);
+        assertEquals(oldDisc, MEDIA_RESOURCE.getDiscByBarcode("5050582810837"));
 
         Disc newDisc = new Disc("5050582810837", "", 0, "Notting Hill");
-        Response result = mediaResource.updateDisc(newDisc);
+        Response result = MEDIA_RESOURCE.updateDisc(newDisc);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
 
         Disc newDisc2 = new Disc("5050582810837", "Michell", 0, "");
-        result = mediaResource.updateDisc(newDisc2);
+        result = MEDIA_RESOURCE.updateDisc(newDisc2);
         assertEquals(MediaServiceResult.NOT_VALID.getCode(), result.getStatus());
     }
 }
