@@ -85,7 +85,7 @@
         var openingTagRe, closingTagRe, closingCurlyRe;
 
         function compileTags(tagsToCompile) {
-            if (typeof tagsToCompile === "string")tagsToCompile = tagsToCompile.split(spaceRe, 2);
+            if (typeof tagsToCompile === "string") tagsToCompile = tagsToCompile.split(spaceRe, 2);
             if (!isArray(tagsToCompile) || tagsToCompile.length !== 2)throw new Error("Invalid tags: " + tagsToCompile);
             openingTagRe = new RegExp(escapeRegExp(tagsToCompile[0]) + "\\s*");
             closingTagRe = new RegExp("\\s*" + escapeRegExp(tagsToCompile[1]));
@@ -108,7 +108,7 @@
                     }
                     tokens.push(["text", chr, start, start + 1]);
                     start += 1;
-                    if (chr === "\n")stripSpace()
+                    if (chr === "\n") stripSpace()
                 }
             }
             if (!scanner.scan(openingTagRe))break;
@@ -247,7 +247,7 @@
                     names = name.split(".");
                     index = 0;
                     while (value != null && index < names.length) {
-                        if (index === names.length - 1)lookupHit = hasProperty(value, names[index]);
+                        if (index === names.length - 1) lookupHit = hasProperty(value, names[index]);
                         value = value[names[index++]]
                     }
                 } else {
@@ -259,7 +259,7 @@
             }
             cache[name] = value
         }
-        if (isFunction(value))value = value.call(this.view);
+        if (isFunction(value)) value = value.call(this.view);
         return value
     };
     function Writer() {
@@ -272,7 +272,7 @@
     Writer.prototype.parse = function parse(template, tags) {
         var cache = this.cache;
         var tokens = cache[template];
-        if (tokens == null)tokens = cache[template] = parseTemplate(template, tags);
+        if (tokens == null) tokens = cache[template] = parseTemplate(template, tags);
         return tokens
     };
     Writer.prototype.render = function render(template, view, partials) {
@@ -287,8 +287,8 @@
             value = undefined;
             token = tokens[i];
             symbol = token[0];
-            if (symbol === "#")value = this.renderSection(token, context, partials, originalTemplate); else if (symbol === "^")value = this.renderInverted(token, context, partials, originalTemplate); else if (symbol === ">")value = this.renderPartial(token, context, partials, originalTemplate); else if (symbol === "&")value = this.unescapedValue(token, context); else if (symbol === "name")value = this.escapedValue(token, context); else if (symbol === "text")value = this.rawValue(token);
-            if (value !== undefined)buffer += value
+            if (symbol === "#") value = this.renderSection(token, context, partials, originalTemplate); else if (symbol === "^") value = this.renderInverted(token, context, partials, originalTemplate); else if (symbol === ">") value = this.renderPartial(token, context, partials, originalTemplate); else if (symbol === "&") value = this.unescapedValue(token, context); else if (symbol === "name") value = this.escapedValue(token, context); else if (symbol === "text") value = this.rawValue(token);
+            if (value !== undefined) buffer += value
         }
         return buffer
     };
@@ -311,7 +311,7 @@
         } else if (isFunction(value)) {
             if (typeof originalTemplate !== "string")throw new Error("Cannot use higher-order sections without the original template");
             value = value.call(context.view, originalTemplate.slice(token[3], token[5]), subRender);
-            if (value != null)buffer += value
+            if (value != null) buffer += value
         } else {
             buffer += this.renderTokens(token[4], context, partials, originalTemplate)
         }
