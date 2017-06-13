@@ -1,16 +1,21 @@
 package edu.hm.shareit.models;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
-
 @Entity
+@Table(name="BOOKS")
+@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
 public class Book extends Medium {
 
+    @Column(nullable = false)
     private final String author;
+
+    @Id
+    @Column(nullable = false)
     private final String isbn;
 
     /**

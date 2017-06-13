@@ -1,19 +1,16 @@
 package edu.hm.shareit.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
 
-@Entity
-@Table(name="Medien")
-@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class Medium {
+
+    @Column(nullable = false)
     private final String title;
 
     public Medium(String title) {
@@ -41,6 +38,6 @@ public abstract class Medium {
 
     @Override
     public int hashCode() {
-        return getTitle() != null ? getTitle().hashCode() : 0;
+        return getTitle().hashCode() ;
     }
 }
