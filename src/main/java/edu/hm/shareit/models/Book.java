@@ -1,9 +1,13 @@
 package edu.hm.shareit.models;
 
+import javax.persistence.Entity;
+
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
+
+@Entity
 public class Book extends Medium {
 
     private final String author;

@@ -1,9 +1,13 @@
 package edu.hm.shareit.models;
 
+import javax.persistence.Entity;
+
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
+
+@Entity
 public class Disc extends Medium {
     private final String barcode;
     private final String director;

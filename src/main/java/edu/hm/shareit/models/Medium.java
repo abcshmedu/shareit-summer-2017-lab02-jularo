@@ -1,9 +1,18 @@
 package edu.hm.shareit.models;
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
+
+@Entity
+@Table(name="Medien")
+@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
 public abstract class Medium {
     private final String title;
 
