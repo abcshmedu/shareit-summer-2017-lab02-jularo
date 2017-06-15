@@ -14,11 +14,11 @@ import static org.junit.Assert.assertEquals;
  * @version 2017-04-19
  */
 public class MediaServiceImplTest {
-    private MediaServiceImpl mediaService;
+    private MediaService mediaService;
 
     @Before
     public void initialize() {
-        this.mediaService = new MediaServiceImpl();
+        this.mediaService = new MediaService();
     }
 
     //----------------------------------------------

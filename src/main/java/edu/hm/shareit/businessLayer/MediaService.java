@@ -4,27 +4,239 @@ import edu.hm.shareit.models.Book;
 import edu.hm.shareit.models.Disc;
 import edu.hm.shareit.models.Medium;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
-public interface MediaService {
+public class MediaService implements IMediaService {
+    private final Map<String, Book> books;
+    private final Map<String, Disc> discs;
 
-    MediaServiceResult addBook(Book book);
+    public MediaService() {
+        this.books = new HashMap<>();
+        this.discs = new HashMap<>();
+    }
 
-    MediaServiceResult addDisc(Disc disc);
+    @Override
+    public MediaServiceResult addBook(Book book) {
 
-    Medium[] getBooks();
+        if (books.containsKey(book.getIsbn())) {
+            //Error duplicate ISBN
+            //return MediaServiceResult
+            return MediaServiceResult.DUPLICATE_ISBN;
+        }
 
-    Medium[] getDiscs();
+        if (!isbnIsValid(book.getIsbn())) {
+            return MediaServiceResult.INVALID_ISBN;
+        }
 
-    Medium getBook(String isbn);
+        if (book.getAuthor().isEmpty() || book.getTitle().isEmpty()) {
+            //Error no author
+            //return MediaServiceResult
+            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
+        }
 
-    Medium getDisc(String barcode);
+        books.put(book.getIsbn(), book);
 
-    MediaServiceResult updateBook(Book book, String isbn);
+        return MediaServiceResult.OK;
+    }
 
-    MediaServiceResult updateDisc(Disc disc, String barcode);
+    @Override
+    public MediaServiceResult addDisc(Disc disc) {
 
-    void clearMap();
+        if (discs.containsKey(disc.getBarcode())) {
+            //Error duplicate ISBN
+            //return MediaServiceResult
+            return MediaServiceResult.DUPLICATE_Barcode;
+        }
+
+        if (!barcodeIsValid(disc.getBarcode()) || disc.getBarcode().isEmpty()) {
+            return MediaServiceResult.INVALID_BARCODE;
+        }
+
+        if (disc.getDirector().isEmpty() || disc.getTitle().isEmpty() || disc.getFsk() == -1) {
+            //Error no author
+            //return MediaServiceResult
+            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
+        }
+
+        discs.put(disc.getBarcode(), disc);
+
+
+        return MediaServiceResult.OK;
+    }
+
+    @Override
+    public Medium[] getBooks() {
+        Medium[] result = new Medium[books.size()];
+
+        Iterator<Book> mediumIterator = books.values().iterator();
+
+        for (int i = 0; mediumIterator.hasNext(); i++) {
+            result[i] = mediumIterator.next();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Medium[] getDiscs() {
+        Medium[] result = new Medium[discs.size()];
+        Iterator<Disc> mediumIterator = discs.values().iterator();
+
+        for (int i = 0; mediumIterator.hasNext(); i++) {
+            result[i] = mediumIterator.next();
+        }
+
+        return result;
+    }
+
+    @Override
+    public Medium getBook(String isbn) {
+        Medium result = books.get(isbn);
+
+        return result;
+    }
+
+    @Override
+    public Medium getDisc(String barcode) {
+        Medium result = discs.get(barcode);
+
+        return result;
+    }
+
+    @Override
+    public MediaServiceResult updateBook(Book book, String isbn) {
+        if (!book.getIsbn().isEmpty() && !book.getIsbn().equals(isbn)) {
+            //modifying is ISBN is not allowed
+            return MediaServiceResult.MODIFYING_ISBN_NOT_ALLOWED;
+        }
+
+        if (!books.containsKey(isbn)) {
+            //ISBN not found
+            return MediaServiceResult.ISBN_NOT_FOUND;
+        }
+
+//        if (book.getAuthor().isEmpty() && book.getTitle().isEmpty()) {
+//            //author and title are missing
+//            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
+//        }
+
+        MediaServiceResult result;
+
+        Book oldBook = books.get(isbn);
+        books.remove(oldBook);
+
+        String newTitle = book.getTitle() == null || book.getTitle().isEmpty() ? oldBook.getTitle() : book.getTitle();
+        String newAuthor = book.getAuthor() == null || book.getAuthor().isEmpty() ? oldBook.getAuthor() : book.getAuthor();
+
+        Book newBook = new Book(newTitle, newAuthor, oldBook.getIsbn());
+
+        books.put(newBook.getIsbn(), newBook);
+
+
+        return MediaServiceResult.OK;
+    }
+
+    @Override
+    public MediaServiceResult updateDisc(Disc disc, String barcode) {
+        if (!disc.getBarcode().isEmpty() && !disc.getBarcode().equals(barcode)) {
+            //modifying is Barcode is not allowed
+            return MediaServiceResult.MODIFYING_BARCODE_NOT_ALLOWED;
+        }
+
+        if (!discs.containsKey(barcode)) {
+            //Barcode not found
+            return MediaServiceResult.BARCODE_NOT_FOUND;
+        }
+
+//        if (disc.getDirector().isEmpty() && disc.getTitle().isEmpty() && disc.getFsk() == -1) {
+//            //author, title and fsk are missing
+//            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
+//        }
+
+        MediaServiceResult result;
+
+        Disc oldDisc = discs.get(barcode);
+        discs.remove(oldDisc);
+
+        String newTitle = disc.getTitle() == null || disc.getTitle().isEmpty() ? oldDisc.getTitle() : disc.getTitle();
+        String newDirector = disc.getDirector() == null || disc.getDirector().isEmpty() ? oldDisc.getDirector() : disc.getDirector();
+        int newfsk = disc.getFsk() == -1 ? oldDisc.getFsk() : disc.getFsk();
+
+        Disc newDisc = new Disc(newTitle, oldDisc.getBarcode(), newDirector, newfsk);
+
+        discs.put(newDisc.getBarcode(), newDisc);
+
+
+        return MediaServiceResult.OK;
+    }
+
+
+    private boolean isbnIsValid(String isbnCode) {
+        isbnCode = isbnCode.trim().replace("-", "");
+
+        final int[] isbn = isbnCode.chars()
+                .map(x -> Character.getNumericValue(x))
+                .toArray();
+
+        int sum = 0;
+        if (isbn.length == 10) {
+            for (int i = 0; i < 10; i++) {
+                sum += i * isbn[i]; //asuming this is 0..9, not '0'..'9'
+            }
+
+            if (isbn[9] == sum % 11) return true;
+        } else if (isbn.length == 13) {
+
+            for (int i = 0; i < 12; i++) {
+                if (i % 2 == 0) {
+                    sum += isbn[i]; //asuming this is 0..9, not '0'..'9'
+                } else {
+                    sum += isbn[i] * 3;
+                }
+            }
+
+            if (isbn[12] == 10 - (sum % 10)) return true;
+        }
+        return false;
+    }
+
+    private boolean barcodeIsValid(String barcode) {
+        if (barcode.length() == 13) {
+            final int[] ean13 = barcode.chars()
+                    .map(x -> Character.getNumericValue(x))
+                    .limit(12)
+                    .toArray();
+
+            return calculateCheckDigit(ean13) == Character.getNumericValue(barcode.charAt(12));
+        }
+        return false;
+    }
+
+    private int calculateCheckDigit(int[] digits) {
+        int sum = 0;
+        int multiplier = 3;
+        for (int i = digits.length - 1; i >= 0; i--) {
+            sum += digits[i] * multiplier;
+            multiplier = (multiplier == 3) ? 1 : 3;
+        }
+        int sumPlus9 = sum + 9;
+        int nextMultipleOfTen = sumPlus9 - (sumPlus9 % 10); // nextMultipleOfTen ist jetzt das nächste Vielfache von zehn
+        return nextMultipleOfTen - sum;
+    }
+
+
+    /**
+     * resetting the Maps for testing.
+     */
+    @Override
+    public void clearMap() {
+        books.clear();
+        discs.clear();
+    }
 }

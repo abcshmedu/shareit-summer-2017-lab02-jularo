@@ -1,14 +1,19 @@
 package edu.hm.shareit.models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
 
+
+//@Entity
+//@Table(name="Medien")
+//@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @MappedSuperclass
-public abstract class Medium {
+public abstract class Medium  implements Serializable {
 
     @Column(nullable = false)
     private final String title;

@@ -1,7 +1,7 @@
 package edu.hm.shareit.resource;
 
+import edu.hm.shareit.businessLayer.IMediaService;
 import edu.hm.shareit.businessLayer.MediaService;
-import edu.hm.shareit.businessLayer.MediaServiceImpl;
 import edu.hm.shareit.businessLayer.MediaServiceResult;
 import edu.hm.shareit.models.Book;
 import edu.hm.shareit.models.Disc;
@@ -24,7 +24,7 @@ import java.net.URLConnection;
 @Path("media")
 public class MediaResource {
 
-    private static final MediaService mediaService = new MediaServiceImpl();
+    private static final IMediaService mediaService = new MediaService();
 
     /**
      * URI-Template     Verb    Wirkung
@@ -53,6 +53,7 @@ public class MediaResource {
 
         return Response.status(result.getStatusCode()).entity(result).build();
     }
+
 
 
     /**
