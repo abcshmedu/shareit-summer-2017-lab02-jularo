@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE hibernate-configuration PUBLIC
-        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+          "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+          "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
 
@@ -17,9 +17,9 @@
         <property name="hbm2ddl.auto">create</property>
         <property name="transaction.auto_close_session">true</property>
 
-        <mapping class="edu.hm.shareit.models.Book"/>
-        <mapping class="edu.hm.shareit.models.Disc"/>
-        <mapping class="edu.hm.shareit.models.Medium"/>
+        <mapping class="edu.hm.shareit.models.Book" />
+        <mapping class="edu.hm.shareit.models.Disc" />
+        <mapping class="edu.hm.shareit.models.Medium" />
 
     </session-factory>
 

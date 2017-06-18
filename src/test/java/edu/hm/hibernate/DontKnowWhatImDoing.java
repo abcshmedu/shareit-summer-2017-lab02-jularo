@@ -1,226 +1,224 @@
 package edu.hm.hibernate;
 
-import edu.hm.shareit.businessLayer.MediaService;
-import edu.hm.shareit.businessLayer.MediaServiceResult;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.servlet.ServletModule;
+import edu.hm.shareit.businessLayer.*;
 import edu.hm.shareit.models.Book;
 import edu.hm.shareit.models.Disc;
-import edu.hm.shareit.persistence.MediaDAO;
-import edu.hm.shareit.resource.MediaRessource;
+import edu.hm.shareit.models.Medium;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
 
 public class DontKnowWhatImDoing {
 
 
-    private static Book bookMock, bookMock2;
-    private static Disc discMock, discMock2;
-    private static MediaRessource mediaRessource;
+    private static MediaService mediaService;
 
-    private static MediaDAO mediaDAOMock;
+    @BeforeClass
+    public static void setUp() throws Exception {
+        Injector injector = Guice.createInjector(new ServletModule() {
+            @Override
+            protected void configureServlets() {
+                bind(IMediaService.class).to(MediaService.class);
+                bind(IMediaDAO.class).to(MediaDAO.class);
+            }
+        });
 
-    private static final HashMap<String, Book> books = new HashMap<>();
-    private static final HashMap<String, Disc> discs = new HashMap<>();
+        mediaService = injector.getInstance(MediaService.class);
+    }
 
     @Before
-    public void init() throws Exception {
-        mocking();
-
-        MediaService mediaService = new MediaService(mediaDAOMock);
-        mediaRessource = new MediaRessource(mediaService);
+    public void resetDataBase() {
+        mediaService.clearMap();
     }
-
-    private void mocking() {
-        mediaDAOMock = mock(MediaDAO.class);
-        booksMocking();
-        discsMocking();
-    }
-
-    private void booksMocking() {
-        bookMock = mock(Book.class);
-        when(bookMock.getAuthor()).thenReturn("Adler Olsen");
-        when(bookMock.getTitle()).thenReturn("TAKEOVER");
-        when(bookMock.getIsbn()).thenReturn("9783423216487");
-
-        bookMock2 = mock(Book.class);
-        when(bookMock2.getAuthor()).thenReturn("Adler Olsen");
-        when(bookMock2.getTitle()).thenReturn("Selfies");
-        when(bookMock2.getIsbn()).thenReturn("9783423281072");
-
-        doAnswer(
-                Void -> {
-                    books.put(bookMock.getIsbn(), bookMock);
-                    return null;
-                }
-        ).when(mediaDAOMock).addBook(bookMock);
-
-        doAnswer(
-                Void -> {
-                    books.remove(bookMock.getIsbn());
-                    books.put(bookMock.getIsbn(), bookMock);
-                    return null;
-                }
-        ).when(mediaDAOMock).updateBook(bookMock);
-    }
-
-    private void discsMocking() {
-        discMock = mock(Disc.class);
-        when(discMock.getDirector()).thenReturn("Paul McGuigan");
-        when(discMock.getTitle()).thenReturn("Lucky Number Slevin");
-        when(discMock.getBarcode()).thenReturn("4011976318088");
-        when(discMock.getFsk()).thenReturn(16);
-
-        discMock2 = mock(Disc.class);
-        when(discMock2.getDirector()).thenReturn("Roger Michell");
-        when(discMock2.getTitle()).thenReturn("Notting Hill");
-        when(discMock2.getBarcode()).thenReturn("0044005976021");
-        when(discMock2.getFsk()).thenReturn(6);
-
-        doAnswer(
-                Void -> {
-                    discs.put(bookMock.getIsbn(), discMock);
-                    return null;
-                }
-        ).when(mediaDAOMock).addDisc(discMock);
-
-        doAnswer(
-                Void -> {
-                    discs.remove(discMock.getBarcode());
-                    discs.put(discMock.getBarcode(), discMock);
-                    return null;
-                }
-        ).when(mediaDAOMock).updateDisc(discMock);
-    }
-
 
     @Test
     public void createBook() throws Exception {
-        Response result = mediaRessource.addBook(bookMock);
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+        MediaServiceResult result = mediaService.addBook(new Book("TAKEOVER", "Adler Olsen", "978-3-423-21648-7"));
+        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatusCode());
     }
 
     @Test
     public void createExistingBook() throws Exception {
-        when(mediaDAOMock.getBook(bookMock.getIsbn())).thenReturn(bookMock);
-        Response result = mediaRessource.addBook(bookMock);
-        assertEquals(MediaServiceResult.DUPLICATE_ISBN.getStatusCode(), result.getStatus());
+        mediaService.addBook(new Book("TAKEOVER", "Adler Olsen", "978-3-423-21648-7"));
+        MediaServiceResult result = mediaService.addBook(new Book("TAKEOVER", "Adler Olsen", "978-3-423-21648-7"));
+        assertEquals(MediaServiceResult.DUPLICATE_ISBN.getStatusCode(), result.getStatusCode());
     }
 
     @Test
     public void getBook() throws Exception {
-        Response result = mediaRessource.getBook(bookMock.getIsbn());
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+        Book testBook = new Book("C", "D", "978-3-423-21648-7");
+        mediaService.addBook(testBook);
+        Book book = (Book) mediaService.getBook("978-3-423-21648-7");
+        assertEquals(book, testBook);
     }
 
     @Test
     public void getBooks() throws Exception {
-        books.put(bookMock.getIsbn(), bookMock);
-        books.put(bookMock2.getIsbn(), bookMock2);
+        Book testBook = new Book("TAKEOVER", "Adler Olsen", "978-3-423-21648-7");
+        Book testBook2 = new Book("Selfies", "Adler Olsen", "9783423431293");
+        mediaService.addBook(testBook);
+        mediaService.addBook(testBook2);
 
-        doAnswer(
-                ArrayList -> new ArrayList<>(books.values())
-        ).when(mediaDAOMock).getBooks();
+        Medium[] books =  mediaService.getBooks();
 
-        Response result = mediaRessource.getBooks();
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+        boolean book1Found = false;
+        boolean book2Found = false;
+        for (Medium book : books) {
+            if (book.equals(testBook))
+                book1Found = true;
+            if (book.equals(testBook2))
+                book2Found = true;
+        }
+
+        assertTrue(book1Found && book2Found);
     }
 
     @Test
     public void updateBookTitleAndAuthor() throws Exception {
-        when(bookMock.getAuthor()).thenReturn("AdlaaaaOlsen");
-        when(bookMock.getTitle()).thenReturn("Takeover");
-        when(mediaDAOMock.getBook(bookMock.getIsbn())).thenReturn(bookMock);
-        Response result = mediaRessource.updateBook(bookMock.getIsbn(), bookMock);
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
-        assertEquals("AdlaaaaOlsen", bookMock.getAuthor());
-        assertEquals("Takeover", bookMock.getTitle());
+        Book testBook = new Book("TAKEOVER", "Adla Olsen", "978-3-423-21648-7");
+        mediaService.addBook(testBook);
+        MediaServiceResult response = mediaService.updateBook(new Book("Take Over", "Adler Olsen", "978-3-423-21648-7"), "978-3-423-21648-7");
+        assertEquals(response.getStatusCode(), MediaServiceResult.OK.getStatusCode());
+        Book result = (Book) mediaService.getBook(testBook.getIsbn());
+        assertEquals("Take Over", result.getTitle());
+        assertEquals("Adler Olsen", result.getAuthor());
     }
 
 
     @Test
     public void updateBookISBN() throws Exception {
-        when(mediaDAOMock.getBook(bookMock.getIsbn())).thenReturn(bookMock);
-        Response result = mediaRessource.updateBook("12345678", bookMock);
-        assertEquals(MediaServiceResult.MODIFYING_ISBN_NOT_ALLOWED.getStatusCode(), result.getStatus());
-        assertEquals("Adler Olsen", bookMock.getAuthor());
-        assertEquals("TAKEOVER", bookMock.getTitle());
-        assertEquals("9783423216487", bookMock.getIsbn());
+        Book testBook = new Book("TAKEOVER", "Adler Olsen", "978-3-423-21648-7");
+        mediaService.addBook(testBook);
+        MediaServiceResult response = mediaService.updateBook(new Book("", "", "3423431296"), "978-3-423-21648-7");
+        assertEquals(MediaServiceResult.MODIFYING_ISBN_NOT_ALLOWED.getStatusCode(), response.getStatusCode());
+        Book result = (Book) mediaService.getBook(testBook.getIsbn());
+        assertEquals(result.getTitle(), testBook.getTitle());
+        assertEquals(result.getAuthor(), testBook.getAuthor());
+        Book notFound = (Book) mediaService.getBook("test");
+        assertEquals(notFound, null);
     }
 
     @Test
     public void updateBookNotFound() throws Exception {
-        when(mediaDAOMock.getBook("1234")).thenReturn(null);
-        Response result = mediaRessource.updateBook("1234", bookMock);
-        assertEquals(MediaServiceResult.ISBN_NOT_FOUND.getStatusCode(), result.getStatus());
+
+        MediaServiceResult response = mediaService.updateBook(new Book("Lucky Number Slevin", "Paul McGuigan", null), "978-3-423-21648-7");
+        assertEquals(MediaServiceResult.ISBN_NOT_FOUND.getStatusCode(), response.getStatusCode());
 
     }
 
-
     @Test
     public void createDisc() throws Exception {
-        Response result = mediaRessource.addDisc(discMock);
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+
+        MediaServiceResult result = mediaService.addDisc(new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16));
+        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatusCode());
+
     }
 
     @Test
     public void createExistingDisc() throws Exception {
-        when(mediaDAOMock.getDisc(discMock.getBarcode())).thenReturn(discMock);
-        Response result = mediaRessource.addDisc(discMock);
-        assertEquals(MediaServiceResult.DUPLICATE_BARCODE.getStatusCode(), result.getStatus());
+
+        mediaService.addDisc(new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16));
+        MediaServiceResult result = mediaService.addDisc(new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16));
+        assertEquals(MediaServiceResult.DUPLICATE_Barcode.getStatusCode(), result.getStatusCode());
     }
 
     @Test
     public void getDisc() throws Exception {
-        Response result = mediaRessource.getDisc(discMock.getBarcode());
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        mediaService.addDisc(testDisc);
+        Disc disc = (Disc) mediaService.getDisc("4011976318088");
+        assertEquals(disc, testDisc);
+
     }
 
     @Test
     public void getDiscs() throws Exception {
-        discs.put(discMock.getBarcode(), discMock);
-        discs.put(discMock2.getBarcode(), discMock2);
 
-        doAnswer(
-                ArrayList -> new ArrayList<>(discs.values())
-        ).when(mediaDAOMock).getDiscs();
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        Disc testDisc2 = new Disc("The Martian", "4010232067777", "Ridley Scott", 12);
+        mediaService.addDisc(testDisc);
+        mediaService.addDisc(testDisc2);
 
-        Response result = mediaRessource.getDiscs();
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
+        Medium[] discs = mediaService.getDiscs();
+
+        boolean disc1Found = false;
+        boolean disc2Found = false;
+        for (Medium disc : discs) {
+            if (disc.equals(testDisc))
+                disc1Found = true;
+            if (disc.equals(testDisc2))
+                disc2Found = true;
+        }
+
+        assertTrue(disc1Found && disc2Found);
     }
 
     @Test
-    public void updateDiscDirectorAndTitle() throws Exception {
-        when(discMock.getDirector()).thenReturn("AdlaaaaOlsen");
-        when(discMock.getTitle()).thenReturn("Takeover");
-        when(mediaDAOMock.getDisc(discMock.getBarcode())).thenReturn(discMock);
-        Response result = mediaRessource.updateDisc(discMock.getBarcode(), discMock);
-        assertEquals(MediaServiceResult.OK.getStatusCode(), result.getStatus());
-        assertEquals("AdlaaaaOlsen", discMock.getDirector());
-        assertEquals("Takeover", discMock.getTitle());
+    public void updateDiscTitle() throws Exception {
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        mediaService.addDisc(testDisc);
+        MediaServiceResult response = mediaService.updateDisc(new Disc("Lucky#Slevin", "", "", -1), testDisc.getBarcode());
+        assertEquals(response.getStatusCode(), MediaServiceResult.OK.getStatusCode());
+        Disc result = (Disc) mediaService.getDisc(testDisc.getBarcode());
+        assertEquals(result.getTitle(), "Lucky#Slevin");
+        assertEquals(result.getDirector(), testDisc.getDirector());
+        assertEquals(result.getFsk(), testDisc.getFsk());
     }
 
+    @Test
+    public void updateDiscDirector() throws Exception {
+
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        mediaService.addDisc(testDisc);
+        MediaServiceResult response = mediaService.updateDisc(new Disc("", "", "P.McGuigan", -1), testDisc.getBarcode());
+        assertEquals(MediaServiceResult.OK.getStatusCode(), response.getStatusCode());
+        Disc result = (Disc) mediaService.getDisc(testDisc.getBarcode());
+        assertEquals(result.getTitle(), testDisc.getTitle());
+        assertEquals(result.getDirector(), "P.McGuigan");
+        assertEquals(result.getFsk(), testDisc.getFsk());
+    }
+
+    @Test
+    public void updateDiscFSK() throws Exception {
+
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        mediaService.addDisc(testDisc);
+        MediaServiceResult response = mediaService.updateDisc(new Disc("", "", "", 18), testDisc.getBarcode());
+        assertEquals(MediaServiceResult.OK.getStatusCode(), response.getStatusCode());
+        Disc result = (Disc) mediaService.getDisc(testDisc.getBarcode());
+        assertEquals(result.getTitle(), testDisc.getTitle());
+        assertEquals(result.getDirector(), testDisc.getDirector());
+        assertEquals(18, result.getFsk());
+    }
 
     @Test
     public void updateDiscBarcode() throws Exception {
-        when(mediaDAOMock.getDisc(discMock.getBarcode())).thenReturn(discMock);
-        Response result = mediaRessource.updateDisc("12345678", discMock);
-        assertEquals(MediaServiceResult.MODIFYING_BARCODE_NOT_ALLOWED.getStatusCode(), result.getStatus());
-        assertEquals("Paul McGuigan", discMock.getDirector());
-        assertEquals("Lucky Number Slevin", discMock.getTitle());
-        assertEquals("4011976318088", discMock.getBarcode());
+
+        Disc testDisc = new Disc("Lucky Number Slevin", "4011976318088", "Paul McGuigan", 16);
+        mediaService.addDisc(testDisc);
+        MediaServiceResult response = mediaService.updateDisc(new Disc("", "4010232067777", "", -1), testDisc.getBarcode());
+        assertEquals(MediaServiceResult.MODIFYING_BARCODE_NOT_ALLOWED.getStatusCode(), response.getStatusCode());
+        Disc result = (Disc) mediaService.getDisc(testDisc.getBarcode());
+        assertEquals(result.getTitle(), testDisc.getTitle());
+        assertEquals(result.getDirector(), testDisc.getDirector());
+        assertEquals(result.getFsk(), testDisc.getFsk());
+        result = (Disc) mediaService.getDisc("haaaaa");
+        assertEquals(result, null);
     }
 
     @Test
     public void updateDiscNotFound() throws Exception {
-        when(mediaDAOMock.getDisc("1234")).thenReturn(null);
-        Response result = mediaRessource.updateDisc("1234", discMock);
-        assertEquals(MediaServiceResult.BARCODE_NOT_FOUND.getStatusCode(), result.getStatus());
+
+        MediaServiceResult response = mediaService.updateDisc(new Disc("", "", "", -1), "4010232067777");
+        assertEquals(MediaServiceResult.BARCODE_NOT_FOUND.getStatusCode(), response.getStatusCode());
+
 
     }
+
 }

@@ -1,7 +1,6 @@
 package edu.hm.shareit.models;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -14,13 +13,13 @@ import java.io.Serializable;
 //@Table(name="Medien")
 //@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @MappedSuperclass
-public abstract class Medium implements Serializable {
+public abstract class Medium  implements Serializable {
 
     @Column(nullable = false)
     private final String title;
 
     public Medium(String title) {
-        this.title = title != null ? title : "";
+        this.title = title!=null?title:"";
     }
 
     public String getTitle() {
@@ -34,12 +33,8 @@ public abstract class Medium implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Medium medium = (Medium) o;
 
@@ -48,6 +43,6 @@ public abstract class Medium implements Serializable {
 
     @Override
     public int hashCode() {
-        return getTitle().hashCode();
+        return getTitle().hashCode() ;
     }
 }
