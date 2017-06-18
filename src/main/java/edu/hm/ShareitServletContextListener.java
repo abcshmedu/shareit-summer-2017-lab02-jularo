@@ -6,8 +6,8 @@ import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
 import edu.hm.shareit.businessLayer.IMediaService;
 import edu.hm.shareit.businessLayer.MediaService;
-import edu.hm.shareit.businessLayer.IMediaDAO;
-import edu.hm.shareit.businessLayer.MediaDAO;
+import edu.hm.shareit.persistence.IMediaDAO;
+import edu.hm.shareit.persistence.MediaDAO;
 
 /**
  * Context Listener to enable usage of google guice together with jersey.

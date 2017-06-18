@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(name="DISCS")
-@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
+@Table(name = "DISCS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Disc extends Medium implements Serializable {
 
     @Id
@@ -20,7 +20,7 @@ public class Disc extends Medium implements Serializable {
     @Column(nullable = false)
     private final String director;
 
-    @Column(nullable = false, length = 2)
+    @Column(nullable = false)
     private final int fsk;
 
 
@@ -36,8 +36,8 @@ public class Disc extends Medium implements Serializable {
 
     public Disc(String title, String barcode, String director, int fsk) {
         super(title);
-        this.barcode =  barcode!=null?barcode:"";
-        this.director  = director!=null?director:"";
+        this.barcode = barcode != null ? barcode : "";
+        this.director = director != null ? director : "";
         this.fsk = fsk;
     }
 
@@ -65,9 +65,15 @@ public class Disc extends Medium implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Disc disc = (Disc) o;
 

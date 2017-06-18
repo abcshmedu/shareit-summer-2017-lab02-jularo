@@ -4,6 +4,8 @@ import edu.hm.shareit.models.Book;
 import edu.hm.shareit.models.Disc;
 import edu.hm.shareit.models.Medium;
 
+import java.util.List;
+
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
@@ -14,9 +16,9 @@ public interface IMediaService {
 
     MediaServiceResult addDisc(Disc disc);
 
-    Medium[] getBooks();
+    List<Book> getBooks();
 
-    Medium[] getDiscs();
+    List<Disc> getDiscs();
 
     Medium getBook(String isbn);
 
@@ -26,5 +28,5 @@ public interface IMediaService {
 
     MediaServiceResult updateDisc(Disc disc, String barcode);
 
-    void clearMap();
+//    void clearMap();
 }
