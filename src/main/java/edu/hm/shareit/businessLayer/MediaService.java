@@ -2,31 +2,34 @@ package edu.hm.shareit.businessLayer;
 
 import edu.hm.shareit.models.Book;
 import edu.hm.shareit.models.Disc;
-import edu.hm.shareit.models.Medium;
+import edu.hm.shareit.persistence.IMediaDAO;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * @author Carolin Direnberger
  * @author Juliane Seidl
  */
 public class MediaService implements IMediaService {
-    private final Map<String, Book> books;
-    private final Map<String, Disc> discs;
 
-    public MediaService() {
-        this.books = new HashMap<>();
-        this.discs = new HashMap<>();
+    private final IMediaDAO mediaDAO;
+
+    @Inject
+    public MediaService(IMediaDAO mediaDAO) {
+        this.mediaDAO = mediaDAO;
     }
+
+
+    private String formatISBN(String isbn) {
+        return isbn.trim().replace("-", "");
+    }
+
 
     @Override
     public MediaServiceResult addBook(Book book) {
 
-        if (books.containsKey(book.getIsbn())) {
-            //Error duplicate ISBN
-            //return MediaServiceResult
+        if (getBook(book.getIsbn()) != null) {
             return MediaServiceResult.DUPLICATE_ISBN;
         }
 
@@ -35,12 +38,10 @@ public class MediaService implements IMediaService {
         }
 
         if (book.getAuthor().isEmpty() || book.getTitle().isEmpty()) {
-            //Error no author
-            //return MediaServiceResult
             return MediaServiceResult.INCOMPLETE_ARGUMENTS;
         }
 
-        books.put(book.getIsbn(), book);
+        mediaDAO.addBook(book);
 
         return MediaServiceResult.OK;
     }
@@ -48,95 +49,63 @@ public class MediaService implements IMediaService {
     @Override
     public MediaServiceResult addDisc(Disc disc) {
 
-        if (discs.containsKey(disc.getBarcode())) {
-            //Error duplicate ISBN
-            //return MediaServiceResult
-            return MediaServiceResult.DUPLICATE_Barcode;
+        if (getDisc(disc.getBarcode()) != null) {
+            return MediaServiceResult.DUPLICATE_BARCODE;
         }
 
-        if (!barcodeIsValid(disc.getBarcode()) || disc.getBarcode().isEmpty()) {
+        if (!barcodeIsValid(disc.getBarcode())) {
             return MediaServiceResult.INVALID_BARCODE;
         }
 
         if (disc.getDirector().isEmpty() || disc.getTitle().isEmpty() || disc.getFsk() == -1) {
-            //Error no author
-            //return MediaServiceResult
             return MediaServiceResult.INCOMPLETE_ARGUMENTS;
         }
 
-        discs.put(disc.getBarcode(), disc);
+        mediaDAO.addDisc(disc);
 
 
         return MediaServiceResult.OK;
     }
 
     @Override
-    public Medium[] getBooks() {
-        Medium[] result = new Medium[books.size()];
-
-        Iterator<Book> mediumIterator = books.values().iterator();
-
-        for (int i = 0; mediumIterator.hasNext(); i++) {
-            result[i] = mediumIterator.next();
-        }
-
-        return result;
+    public List<Book> getBooks() {
+        return mediaDAO.getBooks();
     }
 
     @Override
-    public Medium[] getDiscs() {
-        Medium[] result = new Medium[discs.size()];
-        Iterator<Disc> mediumIterator = discs.values().iterator();
-
-        for (int i = 0; mediumIterator.hasNext(); i++) {
-            result[i] = mediumIterator.next();
-        }
-
-        return result;
+    public List<Disc> getDiscs() {
+        return mediaDAO.getDiscs();
     }
 
     @Override
-    public Medium getBook(String isbn) {
-        Medium result = books.get(isbn);
-
-        return result;
+    public Book getBook(String isbn) {
+        return mediaDAO.getBook(formatISBN(isbn));
     }
 
     @Override
-    public Medium getDisc(String barcode) {
-        Medium result = discs.get(barcode);
-
-        return result;
+    public Disc getDisc(String barcode) {
+        return mediaDAO.getDisc(barcode);
     }
 
     @Override
     public MediaServiceResult updateBook(Book book, String isbn) {
-        if (!book.getIsbn().isEmpty() && !book.getIsbn().equals(isbn)) {
-            //modifying is ISBN is not allowed
+        if (!book.getIsbn().isEmpty() && !book.getIsbn().equals(formatISBN(isbn))) {
             return MediaServiceResult.MODIFYING_ISBN_NOT_ALLOWED;
         }
 
-        if (!books.containsKey(isbn)) {
-            //ISBN not found
+        if (getBook(book.getIsbn()) == null) {
             return MediaServiceResult.ISBN_NOT_FOUND;
         }
 
-//        if (book.getAuthor().isEmpty() && book.getTitle().isEmpty()) {
-//            //author and title are missing
-//            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
-//        }
 
-        MediaServiceResult result;
-
-        Book oldBook = books.get(isbn);
-        books.remove(oldBook);
+        Book oldBook = (Book) getBook(formatISBN(isbn));
 
         String newTitle = book.getTitle() == null || book.getTitle().isEmpty() ? oldBook.getTitle() : book.getTitle();
         String newAuthor = book.getAuthor() == null || book.getAuthor().isEmpty() ? oldBook.getAuthor() : book.getAuthor();
 
         Book newBook = new Book(newTitle, newAuthor, oldBook.getIsbn());
 
-        books.put(newBook.getIsbn(), newBook);
+        mediaDAO.updateBook(newBook);
 
 
         return MediaServiceResult.OK;
@@ -145,24 +114,14 @@ public class MediaService implements IMediaService {
     @Override
     public MediaServiceResult updateDisc(Disc disc, String barcode) {
         if (!disc.getBarcode().isEmpty() && !disc.getBarcode().equals(barcode)) {
-            //modifying is Barcode is not allowed
             return MediaServiceResult.MODIFYING_BARCODE_NOT_ALLOWED;
         }
 
-        if (!discs.containsKey(barcode)) {
-            //Barcode not found
+        if (getDisc(barcode) == null) {
             return MediaServiceResult.BARCODE_NOT_FOUND;
         }
 
-//        if (disc.getDirector().isEmpty() && disc.getTitle().isEmpty() && disc.getFsk() == -1) {
-//            //author, title and fsk are missing
-//            return MediaServiceResult.INCOMPLETE_ARGUMENTS;
-//        }
-
-        MediaServiceResult result;
-
-        Disc oldDisc = discs.get(barcode);
-        discs.remove(oldDisc);
+        Disc oldDisc = (Disc) getDisc(barcode);
 
         String newTitle = disc.getTitle() == null || disc.getTitle().isEmpty() ? oldDisc.getTitle() : disc.getTitle();
         String newDirector = disc.getDirector() == null || disc.getDirector().isEmpty() ? oldDisc.getDirector() : disc.getDirector();
@@ -170,7 +129,7 @@ public class MediaService implements IMediaService {
 
         Disc newDisc = new Disc(newTitle, oldDisc.getBarcode(), newDirector, newfsk);
 
-        discs.put(newDisc.getBarcode(), newDisc);
+        mediaDAO.updateDisc(newDisc);
 
 
         return MediaServiceResult.OK;
@@ -178,10 +137,10 @@ public class MediaService implements IMediaService {
 
 
     private boolean isbnIsValid(String isbnCode) {
-        isbnCode = isbnCode.trim().replace("-", "");
+        isbnCode = formatISBN(isbnCode);
 
         final int[] isbn = isbnCode.chars()
-                .map(x -> Character.getNumericValue(x))
+                .map(Character::getNumericValue)
                 .toArray();
 
         int sum = 0;
@@ -209,7 +168,7 @@ public class MediaService implements IMediaService {
     private boolean barcodeIsValid(String barcode) {
         if (barcode.length() == 13) {
             final int[] ean13 = barcode.chars()
-                    .map(x -> Character.getNumericValue(x))
+                    .map(Character::getNumericValue)
                     .limit(12)
                     .toArray();
 
@@ -231,12 +190,12 @@ public class MediaService implements IMediaService {
     }
 
 
-    /**
-     * resetting the Maps for testing.
-     */
-    @Override
-    public void clearMap() {
-        books.clear();
-        discs.clear();
-    }
+//    /**
+//     * resetting the Maps for testing.
+//     */
+//    @Override
+//    public void clearMap() {
+//        books.clear();
+//        discs.clear();
+//    }
 }

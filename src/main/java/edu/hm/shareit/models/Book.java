@@ -7,15 +7,15 @@ import javax.persistence.*;
  * @author Juliane Seidl
  */
 @Entity
-@Table(name="BOOKS")
-@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
+@Table(name = "BOOKS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Book extends Medium {
 
     @Column(nullable = false)
     private final String author;
 
     @Id
-    @Column(nullable = false,length = 13)
+    @Column(nullable = false)
     private final String isbn;
 
     /**
@@ -29,8 +29,8 @@ public class Book extends Medium {
 
     public Book(String title, String author, String isbn) {
         super(title);
-        this.author = author!=null?author:"";
-        this.isbn = isbn!=null?isbn:"";
+        this.author = author != null ? author : "";
+        this.isbn = isbn != null ? isbn : "";
     }
 
     @Override
@@ -52,9 +52,15 @@ public class Book extends Medium {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Book book = (Book) o;
 
